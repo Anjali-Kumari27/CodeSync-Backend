@@ -1,0 +1,240 @@
+server:
+    port: 8080
+
+spring:
+    application:
+        name: api-gateway
+
+    cloud:
+        gateway:
+            discovery:
+                locator:
+                    enabled: true
+                    lower-case-service-id: true
+
+            default-filters:
+                - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+            globalcors:
+                cors-configurations:
+                    "[/**]":
+                        allowedOrigins:
+                            - "http://localhost:5173"
+                        allowedMethods:
+                            - GET
+                            - POST
+                            - PUT
+                            - DELETE
+                            - OPTIONS
+                        allowedHeaders: "*"
+                        allowCredentials: true
+
+            routes:
+                # ================= AUTH SERVICE =================
+                - id: auth-service
+                  uri: lb://auth-service
+                  predicates:
+                      - Path=/api/auth/**
+                  filters:
+                      - StripPrefix=0
+
+                # ================= PROJECT SERVICE =================
+                - id: project-service
+                  uri: lb://project-service
+                  predicates:
+                      - Path=/api/projects/**
+                  filters:
+                      - StripPrefix=0
+                      - name: JwtAuthenticationFilter
+
+                # ================= FILE SERVICE =================
+                - id: file-service
+                  uri: lb://file-service
+                  predicates:
+                      - Path=/api/files/**
+                  filters:
+                      - StripPrefix=0
+                      - name: JwtAuthenticationFilter
+
+                # ================= COLLAB SERVICE =================
+                - id: collab-service
+                  uri: lb://collab-service
+                  predicates:
+                      - Path=/api/collab/**
+                  filters:
+                      - StripPrefix=0
+                      - name: JwtAuthenticationFilter
+
+                # ================= EXECUTION SERVICE =================
+                - id: execution-service
+                  uri: lb://execution-service
+                  predicates:
+                      - Path=/api/executions/**
+                  filters:
+                      - StripPrefix=0
+                      - name: JwtAuthenticationFilter
+
+                # ================= VERSION SERVICE =================
+                - id: version-service
+                  uri: lb://version-service
+                  predicates:
+                      - Path=/api/versions/**
+                  filters:
+                      - StripPrefix=0
+                      - name: JwtAuthenticationFilter
+
+                # ================= COMMENT SERVICE =================
+                - id: comment-service
+                  uri: lb://comment-service
+                  predicates:
+                      - Path=/api/comments/**
+                  filters:
+                      - StripPrefix=0
+                      - name: JwtAuthenticationFilter
+
+                # ================= NOTIFICATION SERVICE =================
+                - id: notification-service
+                  uri: lb://notification-service
+                  predicates:
+                      - Path=/api/notifications/**
+                  filters:
+                      - StripPrefix=0
+                      - name: JwtAuthenticationFilter
+
+                # ================= PAYMENT SERVICE =================
+                - id: payment-service
+                  uri: lb://payment-service
+                  predicates:
+                      - Path=/payments/**
+                  filters:
+                      - StripPrefix=0
+                      - name: JwtAuthenticationFilter
+
+                # ================= SWAGGER ROUTES =================
+
+                - id: auth-swagger
+                  uri: lb://auth-service
+                  predicates:
+                      - Path=/auth-service/v3/api-docs
+                  filters:
+                      - RewritePath=/auth-service/(?<segment>.*), /${segment}
+
+                - id: project-swagger
+                  uri: lb://project-service
+                  predicates:
+                      - Path=/project-service/v3/api-docs
+                  filters:
+                      - RewritePath=/project-service/(?<segment>.*), /${segment}
+
+                - id: file-swagger
+                  uri: lb://file-service
+                  predicates:
+                      - Path=/file-service/v3/api-docs
+                  filters:
+                      - RewritePath=/file-service/(?<segment>.*), /${segment}
+
+                - id: collab-swagger
+                  uri: lb://collab-service
+                  predicates:
+                      - Path=/collab-service/v3/api-docs
+                  filters:
+                      - RewritePath=/collab-service/(?<segment>.*), /${segment}
+
+                - id: execution-swagger
+                  uri: lb://execution-service
+                  predicates:
+                      - Path=/execution-service/v3/api-docs
+                  filters:
+                      - RewritePath=/execution-service/(?<segment>.*), /${segment}
+
+                - id: version-swagger
+                  uri: lb://version-service
+                  predicates:
+                      - Path=/version-service/v3/api-docs
+                  filters:
+                      - RewritePath=/version-service/(?<segment>.*), /${segment}
+
+                - id: comment-swagger
+                  uri: lb://comment-service
+                  predicates:
+                      - Path=/comment-service/v3/api-docs
+                  filters:
+                      - RewritePath=/comment-service/(?<segment>.*), /${segment}
+
+                - id: notification-swagger
+                  uri: lb://notification-service
+                  predicates:
+                      - Path=/notification-service/v3/api-docs
+                  filters:
+                      - RewritePath=/notification-service/(?<segment>.*), /${segment}
+
+                - id: payment-swagger
+                  uri: lb://payment-service
+                  predicates:
+                      - Path=/payment-service/v3/api-docs
+                  filters:
+                      - RewritePath=/payment-service/(?<segment>.*), /${segment}
+
+eureka:
+    instance:
+        prefer-ip-address: true
+
+    client:
+        service-url:
+            defaultZone: http://localhost:8761/eureka/
+        fetch-registry: true
+        register-with-eureka: true
+
+springdoc:
+    swagger-ui:
+        path: /swagger-ui.html
+
+        urls:
+            - name: Auth Service
+              url: /auth-service/v3/api-docs
+
+            - name: Project Service
+              url: /project-service/v3/api-docs
+
+            - name: File Service
+              url: /file-service/v3/api-docs
+
+            - name: Collab Service
+              url: /collab-service/v3/api-docs
+
+            - name: Execution Service
+              url: /execution-service/v3/api-docs
+
+            - name: Version Service
+              url: /version-service/v3/api-docs
+
+            - name: Comment Service
+              url: /comment-service/v3/api-docs
+
+            - name: Notification Service
+              url: /notification-service/v3/api-docs
+
+            - name: Payment Service
+              url: /payment-service/v3/api-docs
+
+app:
+    jwt:
+        secret: ${JWT_SECRET}
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: health,info,gateway
+
+    endpoint:
+        gateway:
+            enabled: true
+
+        health:
+            show-details: always
+
+logging:
+    level:
+        org.springframework.cloud.gateway: DEBUG
+        com.codesync.gateway: DEBUG
