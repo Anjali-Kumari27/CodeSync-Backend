@@ -1,0 +1,37 @@
+# ============================================================
+# CodeSync Backend — .gitignore
+# ============================================================
+
+# ── Credentials & Secrets ────────────────────────────────────
+.env
+.env.*
+**/application-local.yml
+**/application-secrets.yml
+
+# ── Maven build outputs ──────────────────────────────────────
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ── IDE files ────────────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+.classpath
+.project
+.settings/
+.vscode/
+*.sw?
+.metadata/
+
+# ── OS files ─────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Spring Boot ──────────────────────────────────────────────
+spring-shell.log

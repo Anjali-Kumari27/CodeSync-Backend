@@ -1,0 +1,176 @@
+version: "3.9"
+
+# ============================================================
+# CodeSync – Local Development Docker Compose
+# ============================================================
+# Password for all DBs: anjali123  (matches application.yml)
+# ============================================================
+
+services:
+
+  # ── Auth DB ────────────────────────────────────────────────
+  auth-db:
+    image: mysql:8.2
+    container_name: codesync_auth_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: anjali123
+      MYSQL_DATABASE: auth_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - auth_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-panjali123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Project DB ─────────────────────────────────────────────
+  project-db:
+    image: mysql:8.2
+    container_name: codesync_project_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: anjali123
+      MYSQL_DATABASE: project_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - project_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-panjali123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── File DB ────────────────────────────────────────────────
+  file-db:
+    image: mysql:8.2
+    container_name: codesync_file_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: anjali123
+      MYSQL_DATABASE: file_db
+    ports:
+      - "3308:3306"
+    volumes:
+      - file_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-panjali123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Collab DB ──────────────────────────────────────────────
+  collab-db:
+    image: mysql:8.2
+    container_name: codesync_collab_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: anjali123
+      MYSQL_DATABASE: collab_db
+    ports:
+      - "3309:3306"
+    volumes:
+      - collab_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-panjali123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Execution DB ───────────────────────────────────────────
+  execution-db:
+    image: mysql:8.2
+    container_name: codesync_execution_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: anjali123
+      MYSQL_DATABASE: execution_db
+    ports:
+      - "3310:3306"
+    volumes:
+      - execution_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-panjali123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Version DB ─────────────────────────────────────────────
+  version-db:
+    image: mysql:8.2
+    container_name: codesync_version_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: anjali123
+      MYSQL_DATABASE: version_db
+    ports:
+      - "3311:3306"
+    volumes:
+      - version_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-panjali123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Comment DB ─────────────────────────────────────────────
+  comment-db:
+    image: mysql:8.2
+    container_name: codesync_comment_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: anjali123
+      MYSQL_DATABASE: comment_db
+    ports:
+      - "3312:3306"
+    volumes:
+      - comment_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-panjali123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Notification DB ────────────────────────────────────────
+  notification-db:
+    image: mysql:8.2
+    container_name: codesync_notification_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: anjali123
+      MYSQL_DATABASE: notification_db
+    ports:
+      - "3313:3306"
+    volumes:
+      - notification_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-panjali123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── RabbitMQ ──────────────────────────────────────────────
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: codesync_rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+# ── Named Volumes ──────────────────────────────────────────
+volumes:
+  auth_db_data:
+  project_db_data:
+  file_db_data:
+  collab_db_data:
+  execution_db_data:
+  version_db_data:
+  comment_db_data:
+  notification_db_data:
